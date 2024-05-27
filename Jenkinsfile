@@ -16,7 +16,10 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Build Docker image and capture the image name
                     dockerImage = docker.build("doravissar/k8s:latest")
+                    // Store the image name in a variable
+                    DOCKER_IMAGE = "doravissar/k8s:latest"
                 }
             }
         }
@@ -35,6 +38,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: 'k8s_cred', variable: 'KUBECONFIG')]) {
+                        // Use the stored image name variable
                         sh "kubectl --kubeconfig=config set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
                     }
                 }
