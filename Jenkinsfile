@@ -34,7 +34,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'kind-kubeconfig', variable: 'KUBECONFIG')]) {
+                    withCredentials([file(credentialsId: 'k8s_cred', variable: 'KUBECONFIG')]) {
                         sh 'kubectl create deployment my-app --image=doravissar/k8s:latest --kubeconfig=$KUBECONFIG'
                         sh 'kubectl expose deployment my-app --port=8080 --type=LoadBalancer --kubeconfig=$KUBECONFIG'
                     }
