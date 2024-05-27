@@ -4,6 +4,8 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred')
         KUBECONFIG_CREDENTIALS = credentials('k8s_cred')
+        VERSION = 'latest' // Define the VERSION variable here
+
     }
 
     stages {
