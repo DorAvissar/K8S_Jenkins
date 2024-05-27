@@ -37,9 +37,11 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
+                    def kubeConfigFile = '/tmp/kubeconfig'
                     withCredentials([string(credentialsId: kubeconfigId, variable: 'KUBECONFIG')]) {
-                        sh "kubectl --kubeconfig=<(echo \${KUBECONFIG}) set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
+                        writeFile file: kubeConfigFile, text: env.KUBECONFIG
                     }
+                    sh "kubectl --kubeconfig=${kubeConfigFile} set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
                 }
             }
         }
