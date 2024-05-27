@@ -1,56 +1,47 @@
 pipeline {
     agent any
-
+    
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred')
-        KUBECONFIG_CREDENTIALS = credentials('k8s_cred')
-        VERSION = 'latest' // Define the VERSION variable here
-
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-cred')
+        GIT_CREDENTIALS = 'github_cred'
+        DOCKER_IMAGE = "doravissar/k8s_deploy"
+        kubeconfigId = "k8s_cred"
+        VERSION = "${env.BUILD_NUMBER}"
     }
-
+    
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/DorAvissar/K8S_Jenkins.git'
+                git branch: 'main', url: 'https://github.com/DorAvissar/K8S_Jenkins.git', credentialsId: "${GIT_CREDENTIALS}"
             }
         }
-
+        
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build Docker image and capture the image name
-                    dockerImage = docker.build("doravissar/k8s:latest")
-                    // Store the image name in a variable
-                    DOCKER_IMAGE = "doravissar/k8s:latest"
+                    dockerImage = docker.build("${DOCKER_IMAGE}:${VERSION}")
                 }
             }
         }
-
-        stage('Push Docker Image') {
+        
+        stage('Push to DockerHub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_cred') {
+                    docker.withRegistry('', 'dockerhub-credentials') {
                         dockerImage.push()
                     }
                 }
             }
         }
-
+        
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'k8s_cred', variable: 'KUBECONFIG')]) {
-                        // Use the stored image name variable
-                        sh "kubectl --kubeconfig=config set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
+                    withCredentials([file(credentialsId: kubeconfigId, variable: 'KUBECONFIG')]) {
+                        sh "kubectl --kubeconfig=${KUBECONFIG} set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            cleanWs()
         }
     }
 }
