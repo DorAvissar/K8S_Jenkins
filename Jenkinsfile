@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred')
+        KUBECONFIG_CREDENTIALS = credentials('k8s_cred')
     }
 
     stages {
@@ -33,11 +34,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    // Set up the Kubernetes cluster using Kind
-                    sh 'kind create cluster --name jenkins-cluster'
-
-                    // Apply deployment configuration to the cluster
-                    sh 'kubectl apply -f deployment.yaml'
+                    withCredentials([string(credentialsId: 'k8s_cred', variable: 'KUBECONFIG')]) {
+                        sh "kubectl --kubeconfig=config set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
+                    }
                 }
             }
         }
