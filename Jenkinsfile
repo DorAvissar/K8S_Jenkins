@@ -37,7 +37,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh "kubectl --token=${KUBE_CONFIG} set image deployment/flask-app flask-app=doravissar/k8s_deploy:${VERSION} --record"
+                    sh "kubectl --token=${KUBE_CONFIG} set image deployment/flask-app flask-app=doravissar/k8s_deploy:${VERSION} --namespace=jenkins --record"
                 }
             }
         }
