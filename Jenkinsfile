@@ -2,23 +2,20 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'DockerHub_credentials'
-        DOCKER_IMAGE_NAME = 'doravissar/k8s'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred') 
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from your source control
-                checkout scm
+                git 'https://github.com/DorAvissar/K8S_Jenkins.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    docker.build("${env.DOCKER_IMAGE_NAME}:latest", ".")
+                    dockerImage = docker.build("doravissar/k8s:latest")
                 }
             }
         }
@@ -26,9 +23,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('', "${env.DOCKER_CREDENTIALS_ID}") {
-                        // Push the Docker image to Docker Hub
-                        docker.image("${env.DOCKER_IMAGE_NAME}:latest").push()
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_cred') {
+                        dockerImage.push()
                     }
                 }
             }
