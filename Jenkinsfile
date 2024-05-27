@@ -36,8 +36,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'k8s_cred', variable: 'KUBE_CONFIG')]) {
-                        sh "kubectl --token=${KUBE_CONFIG} set image deployment/flask-app flask-app=doravissar/k8s_deploy:${VERSION} --record"
+                    withCredentials([string(credentialsId: 'k8s_cred', variable: 'K8S_TOKEN')]) {
+                        sh "kubectl --token=${K8S_TOKEN} set image deployment/flask-app flask-app=doravissar/k8s_deploy:${VERSION} --record"
                     }
                 }
             }
