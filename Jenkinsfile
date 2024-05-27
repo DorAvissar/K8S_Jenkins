@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-cred')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred')
         GIT_CREDENTIALS = 'github_cred'
         DOCKER_IMAGE = "doravissar/k8s_deploy"
         kubeconfigId = "k8s_cred"
