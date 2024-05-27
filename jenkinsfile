@@ -1,43 +1,43 @@
 pipeline {
-  agent any
+    agent any
 
-  stages {
-    stage('Build Docker Image') {
-              steps {
-        script {
-          node {
-            git branch: 'main', url: 'https://github.com/snirkap/jenkins.project.git'
-            def myEnv = docker.build 'snirkapah1/jenkins-project:1'
-          }
-        }
-      }
+    environment {
+        DOCKER_CREDENTIALS_ID = 'DockerHub_credentials'
+        DOCKER_IMAGE_NAME = 'doravissar/k8s'
     }
 
-    stage('Upload Image to Docker Hub') {
-      steps {
-        script {
-          docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            def imageName = 'snirkapah1/jenkins-project:1'
-            docker.image(imageName).push()
-          }
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from your source control
+                checkout scm
+            }
         }
-      }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image
+                    docker.build("${env.DOCKER_IMAGE_NAME}:latest", ".")
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('', "${env.DOCKER_CREDENTIALS_ID}") {
+                        // Push the Docker image to Docker Hub
+                        docker.image("${env.DOCKER_IMAGE_NAME}:latest").push()
+                    }
+                }
+            }
+        }
     }
 
-    stage('Deploy to Kubernetes') {
-      environment {
-        KUBECONFIG = credentials('kubeconfig-credentials')
-      }
-      steps {
-        script {
-          def deploymentName = "dep-jenkins-project"
-          def containerName = "jenkins-project-con"
-          def image = "snirkapah1/jenkins-project:1"
-          def namespace = "default"
-
-          sh "kubectl create deployment ${deploymentName} --image=${image} -n ${namespace}"
+    post {
+        always {
+            cleanWs()
         }
-      }
     }
-  }
 }
