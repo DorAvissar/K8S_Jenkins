@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([string(credentialsId: kubeconfigId, variable: 'KUBECONFIG')]) {
-                        sh "kubectl --kubeconfig=${env.KUBECONFIG} set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
+                        sh "kubectl --kubeconfig=\"${KUBECONFIG}\" set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --record"
                     }
                 }
             }
