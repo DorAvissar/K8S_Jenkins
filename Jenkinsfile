@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred')
-        KUBECONFIG_CREDENTIALS = credentials('k8s_cred')
     }
 
     stages {
@@ -34,9 +33,11 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'k8s_cred', variable: 'KUBECONFIG')]) {
-                        sh 'kubectl apply -f deployment.yaml --kubeconfig=$KUBECONFIG'
-                    }
+                    // Set up the Kubernetes cluster using Kind
+                    sh 'kind create cluster --name jenkins-cluster'
+
+                    // Apply deployment configuration to the cluster
+                    sh 'kubectl apply -f deployment.yaml'
                 }
             }
         }
