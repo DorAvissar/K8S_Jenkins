@@ -55,6 +55,7 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
 
 5. **Connect Jenkins to DockerHub**
     - create Docker Hub credentials in Jenkins using a username and password
+![cred](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/9e4be6e8-dd64-4046-86d5-64fa53b933c6)
 
 
 6. **Configure Jenkins Pipeline [jenkinsfile]**
