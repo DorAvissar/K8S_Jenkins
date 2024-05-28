@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-cred')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred')
         GIT_CREDENTIALS = 'github_cred'
         DOCKER_IMAGE = "DorAv/k8s_deploy"
         VERSION = "${env.BUILD_NUMBER}"
@@ -26,7 +26,7 @@ pipeline {
         stage('Push to DockerHub') {
             steps {
                 script {
-                    docker.withRegistry('', 'dockerhub-credentials') {
+                    docker.withRegistry('', 'dockerhub_cred') {
                         dockerImage.push()
                     }
                 }
