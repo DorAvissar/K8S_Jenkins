@@ -6,7 +6,6 @@ pipeline {
         GIT_CREDENTIALS = 'github_cred'
         DOCKER_IMAGE = "doravissar/k8s_deploy"
         VERSION = "${env.BUILD_NUMBER}"
-        KUBE_CONFIG = credentials('kubernets_cred') // Corrected to 'kubernets_cred'
     }
     
     stages {
@@ -37,9 +36,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'kubernets_cred', variable: 'KUBE_TOKEN')]) {
-                        sh "kubectl config set-credentials jenkins-user --token=$KUBE_TOKEN"
-                        sh "kubectl config set-context --current --user=jenkins-user"
+                    withCredentials([file(credentialsId: 'kubernets_cred', variable: 'KUBECONFIG_FILE')]) {
+                        sh 'export KUBECONFIG=$KUBECONFIG_FILE'
                         sh "kubectl set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --namespace=jenkins --record"
                     }
                 }
