@@ -26,7 +26,7 @@ pipeline {
         stage('Push to DockerHub') {
             steps {
                 script {
-                    docker.withRegistry('', 'dockerhub_cred') {
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKERHUB_CREDENTIALS}") {
                         dockerImage.push()
                     }
                 }
@@ -36,7 +36,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'kubernets_cred', variable: 'KUBECONFIG_FILE')]) {
+                    withCredentials([file(credentialsId: 'kubernetes_cred', variable: 'KUBECONFIG_FILE')]) {
                         sh 'export KUBECONFIG=$KUBECONFIG_FILE'
                         sh "kubectl set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --namespace=jenkins --record"
                     }
