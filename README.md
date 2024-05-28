@@ -84,6 +84,7 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
 
 8. **Deployment Verification**
     - Verified the deployment using Lens, ensuring new pods replace the old ones.
+![lens](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/692e8a6c-c689-4ea9-8e47-4ca51d7cc0bb)
 
 ## Troubleshooting
 
