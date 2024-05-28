@@ -40,7 +40,7 @@ pipeline {
                     withCredentials([file(credentialsId: 'kubernets_cred', variable: 'KUBE_CONFIG_FILE')]) {
                         sh "kubectl --kubeconfig=${KUBE_CONFIG_FILE} config set-credentials jenkins-user --client-key=${KUBE_CONFIG_FILE}"
                         sh "kubectl --kubeconfig=${KUBE_CONFIG_FILE} config set-context --current --user=jenkins-user"
-                        sh "kubectl --kubeconfig=${KUBE_CONFIG_FILE} set image deployment/flask-app flask-app=${DOCKER_IMAGE}:${VERSION} --namespace=jenkins --record"
+                        sh "kubectl --kubeconfig=${KUBE_CONFIG_FILE} apply -f - <<EOF\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: k8s-deployment\n  namespace: jenkins\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: flask-app\n  template:\n    metadata:\n      labels:\n        app: flask-app\n    spec:\n      containers:\n      - name: flask-app\n        image: ${DOCKER_IMAGE}:${VERSION}\n        ports:\n        - containerPort: 80\nEOF"
                     }
                 }
             }
