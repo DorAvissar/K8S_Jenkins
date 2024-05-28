@@ -24,7 +24,8 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
     kubectl config set-context --current --namespace=jenkins (to connect the namespace to the cluster)
     kubectl config get-contexts (to verify the cluster)
     ```
-    
+    ![get-context](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/706ccf33-c77e-4936-b4da-9befbbbf3845)
+
 2. **Run Jenkins Container**
     - Started Jenkins container using image created by the docker file (attached in the repo).
     - I created the image of jenkins that support docker (docker build . -t <imagename>). 
@@ -43,6 +44,8 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
     - Connected Jenkins to Kubernetes by configuring the Kubernetes cloud settings and using the kubeconfig credentials defined within Jenkins.
     - **The kubeconfig file details are located in the .kube directory at the following path: C:/Users/Username/.kube**
     - **find the url by doing the following command "kubectl cluster-info --context kind-k8s-jenkins-cluster"**
+![url](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/3afac627-840c-4829-a54a-39a84c47e02b)
+![cloud](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/8a0bdb9f-5870-44b1-b602-648e6605dab6)
 
 4. **Connect Jenkins to GitHub**
     - Set up a GitHub webhook and configured Jenkins credentials to trigger the pipeline upon a commit 
