@@ -34,23 +34,23 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
     docker exec -it -u root <container name> /bin/bash
     chown root:docker /var/run/docker.sock
     ```
-    
+
   - now i was able to run jenkins locally on my local host and access it via the web server
 
 
 3. **Integrate Jenkins with Kubernetes**
-    - Connected Jenkins to Kubernetes by configuring the Kubernetes cloud settings and using the kubeconfig credentials defined within Jenkins.
-    - **The kubeconfig file details are located in the .kube directory at the following path: C:/Users/Username/.kube**
+  - Connected Jenkins to Kubernetes by configuring the Kubernetes cloud settings and using the kubeconfig credentials defined within Jenkins.
+  - **The kubeconfig file details are located in the .kube directory at the following path: C:/Users/Username/.kube**
 
 
 4. **Connect Jenkins to GitHub**
-    - Set up a GitHub webhook and configured Jenkins credentials to trigger the pipeline upon a commit 
-    - Used Ngrok to expose Jenkins to the public for GitHub webhook integration.
-    - **Note that each time Ngrok is restarted, the URL changes, requiring updating the webhook in GitHub accordingly.**
+  - Set up a GitHub webhook and configured Jenkins credentials to trigger the pipeline upon a commit 
+  - Used Ngrok to expose Jenkins to the public for GitHub webhook integration.
+  - **Note that each time Ngrok is restarted, the URL changes, requiring updating the webhook in GitHub accordingly.**
 
 
 5. **Connect Jenkins to DockerHub**
-    - create Docker Hub credentials in Jenkins using a username and password
+  - create Docker Hub credentials in Jenkins using a username and password
 
 
 6. **Configure Jenkins Pipeline [jenkinsfile]**
@@ -68,16 +68,17 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
     script: Defines deployment details and updates the Kubernetes deployment with the new Docker image version, recording the change.
 
 7. **Resolve Deployment Issues**
-    - Encountered `kubectl: not found` error, resolved by installing kubectl inside the Jenkins container.
+  - Encountered `kubectl: not found` error, resolved by installing kubectl inside the Jenkins container.
+    
     ```sh
     apt-get update && apt-get install -y apt-transport-https gnupg2 curl
     curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     chmod +x ./kubectl
     ```
-     - **Note that for the deployment to work, you need to manually deploy the application for the first time**
+  - **Note that for the deployment to work, you need to manually deploy the application for the first time**
 
 8. **Deployment Verification**
-    - Verified the deployment using Lens, ensuring new pods replace the old ones.
+  - Verified the deployment using Lens, ensuring new pods replace the old ones.
 
 ## Troubleshooting
 
