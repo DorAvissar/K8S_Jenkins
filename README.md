@@ -15,19 +15,25 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
 
 ## Project Workflow
 1. **Setup Kubernetes Cluster**
-    - Created a Kubernetes cluster using Kind and configured it with `jenkins-config.yaml`.
+  - Created a Kubernetes cluster using Kind and configured it with `jenkins-config.yaml`.
+    
+    ```sh
     kind create cluster --config jenkins-config.yaml
     kind get clusters
     kubectl create namespace jenkins
     kubectl config set-context --current --namespace=jenkins (to connect the namespace to the cluster)
+    ```
     
 2. **Run Jenkins Container**
   - Started Jenkins container using image created by the docker file (attached in the repo).
-    I created the image of jenkins that support docker (docker build . -t <imagename>). 
-    run the following commands: 
+  - I created the image of jenkins that support docker (docker build . -t <imagename>). 
+  - run the following commands: 
+    
+    ```sh
     docker run -p 9090:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock <imagename> 
     docker exec -it -u root <container name> /bin/bash
     chown root:docker /var/run/docker.sock
+    ```
     
   - now i was able to run jenkins locally on my local host and access it via the web server
 
