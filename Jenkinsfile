@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub_cred')
         GIT_CREDENTIALS = 'github_cred'
-        DOCKER_IMAGE = "DorAv/k8s_deploy"
+        DOCKER_IMAGE = "doravissar/k8s_deploy"
         VERSION = "${env.BUILD_NUMBER}"
     }
     
