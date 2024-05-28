@@ -83,16 +83,16 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
 ## Troubleshooting
 
 ### Docker Commands Not Found
-    - **Issue**: Jenkins container did not recognize Docker commands.
-    - **Solution**: Installed Docker Inside the Jenkins container and started the Docker daemon manually.
+    - Issue: Jenkins container did not recognize Docker commands.
+    - Solution: Installed Docker Inside the Jenkins container and started the Docker daemon manually.
 
 ### kubectl Commands Not Found
-    - **Issue**: Jenkins container did not recognize `kubectl` commands.
-    - **Solution**: Installed kubectl manually and configured kubeconfig.
+    - Issue: Jenkins container did not recognize `kubectl` commands.
+    - Solution: Installed kubectl manually and configured kubeconfig.
 
 ### GitHub Webhook and Localhost Issues
-    - **Issue**: Webhook did not work due to Jenkins running on localhost.
-     - **Solution**: Used Ngrok to expose Jenkins to the public and allow GitHub to trigger the webhook.
+    - Issue: Webhook did not work due to Jenkins running on localhost.
+    - Solution: Used Ngrok to expose Jenkins to the public and allow GitHub to trigger the webhook.
 
 ## Summary
 In summary, this Jenkinsfile defines a declarative pipeline with three stages: building a Docker image, pushing the image to Docker Hub, and deploying the image to a Kubernetes cluster. The pipeline is designed to run on any available agent and includes logic to fetch code from a GitHub repository, build and push the Docker image to Docker Hub, and finally deploy it to Kubernetes.
