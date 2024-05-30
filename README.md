@@ -1,14 +1,10 @@
 # k8s-project
-This project demonstrates the integration between Kubernetes, Jenkins, DockerHub, and GitHub. The goal is to automate the deployment of a simple Flask application using a CI/CD pipeline. When changes are pushed to the `app.py` file on GitHub, Jenkins builds a Docker image, pushes it to DockerHub, and deploys it to a Kubernetes cluster.
+This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub work together. Its aim is to automate the deployment process of a basic Flask application using CI/CD. Whenever modifications are made to the app.py file on GitHub, Jenkins constructs a Docker image, uploads it to DockerHub, and then modifies the deployment.yaml file. This triggers ArgoCD to deploy the updated application to the Kubernetes cluster.
+
 
 ![_דיאגרמה k8s_](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/8da6839b-cc4b-40ba-bba8-c27dcd779116)
 
-
 ## Plugins Used
-- **Kubernetes CLI Plugin**
-- **Kubernetes Continuous Deploy Plugin**
-- **Kubernetes Credentials Plugin**
-- **Kubernetes Plugin**
 - **Docker Plugin**
 - **Docker Commons Plugin**
 - **Docker-build-step**
@@ -17,6 +13,7 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
 
 
 ## Project Workflow
+
 1. **Setup Kubernetes Cluster**
     - Created a Kubernetes cluster using Kind and configured it with `jenkins-config.yaml`.
     
@@ -31,7 +28,7 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
 
 2. **Run Jenkins Container**
     - Started Jenkins container using image created by the docker file (attached in the repo).
-    - I created the image of jenkins that support docker (docker build . -t <imagename>). 
+    - I created the image of jenkins that support docker commands to use them on the pipeline (docker build . -t <imagename>). 
     - run the following commands: 
     
     ```sh
@@ -39,41 +36,55 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
     docker exec -it -u root <container name> /bin/bash
     chown root:docker /var/run/docker.sock
     ```
-
     - now i was able to run jenkins locally on my local host and access it via the web server
 
+3. **Configure ArgoCD**
+    - This will create a new namespace, ArgoCD, where Argo CD services and application resources will live.
+    ```sh
+    kubectl create namespace argocd
+    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    ```
 
-3. **Integrate Jenkins with Kubernetes**
-    - Connected Jenkins to Kubernetes by configuring the Kubernetes cloud settings and using the kubeconfig credentials defined within Jenkins.
-    - **The kubeconfig file details are located in the .kube directory at the following path: C:/Users/Username/.kube**
-    - **find the url by doing the following command "kubectl cluster-info --context kind-k8s-jenkins-cluster"**
-![url](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/3afac627-840c-4829-a54a-39a84c47e02b)
-![cloud](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/8a0bdb9f-5870-44b1-b602-648e6605dab6)
+    - how to get the url of the ArgoCD? 
+    ```sh
+    kubectl get svc -n argocd
+    kubectl port-forward svc/argocd-server -n argocd 9090:443
+    ```
 
 4. **Connect Jenkins to GitHub**
     - Set up a GitHub webhook and configured Jenkins credentials to trigger the pipeline upon a commit 
     - Used Ngrok to expose Jenkins to the public for GitHub webhook integration.
     - **Note that each time Ngrok is restarted, the URL changes, requiring updating the webhook in GitHub accordingly.**
 
-
 5. **Connect Jenkins to DockerHub**
-    - create Docker Hub credentials in Jenkins using a username and password
+    - create Docker Hub credentials in Jenkins using a username and password (make sure that the password is TOKEN , and now your github password)
 ![cred](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/9e4be6e8-dd64-4046-86d5-64fa53b933c6)
 
 
 6. **Configure Jenkins Pipeline [jenkinsfile]**
-    - agent any: This specifies that the pipeline can run on any available Jenkins agent.
-    environment: Defines environment variables for Docker Hub credentials, Git credentials, Docker image name, and the build version.
+    - Checkout:
+        - Purpose: This stage ensures that the latest code from the specified branch in the GitHub repository is checked out for further processing.
+        - Steps:
+        - It retrieves the author's name of the last commit made to the repository.
+        - If the author is identified as "Jenkins", it skips the build to avoid infinite loops where Jenkins continuously builds itself.
+        - It then proceeds to checkout the code from the specified branch in the GitHub repository using the provided credentials.
 
-    - stage('Checkout'): Checks out the code from the main branch of the specified GitHub repository using the provided Git credentials.
+    - Build Docker Image:
+        - Purpose: This stage builds a Docker image of the Flask application using the Dockerfile present in the repository.
+        - Steps:
+        - It utilizes Docker's build functionality to construct the Docker image with the specified tag.
+    
+    - Push to DockerHub:
+        - Purpose: This stage pushes the built Docker image to DockerHub for storage and distribution.
+        - Steps:
+        - It uses Docker's registry functionality along with DockerHub credentials to authenticate and push the Docker image.
 
-    - stage('Build Docker Image'): Builds a Docker image from the checked-out code, tagging it with the version number based on the Jenkins build number. 
-
-    - stage('Push to DockerHub'): Authenticates with Docker Hub using the provided credentials and pushes the built Docker image to the Docker Hub repository.
-
-    - stage('Deploy to Kubernetes'): Deploys the new Docker image to a Kubernetes cluster.
-    environment: Sets the Kubernetes configuration using the provided credentials.
-    script: Defines deployment details and updates the Kubernetes deployment with the new Docker image version, recording the change.
+    - Update Kubernetes Deployment.yaml:
+        - Purpose: This stage updates the Kubernetes deployment manifest file (deployment.yaml) with the latest version of the Docker image.
+        - Steps:
+        - It employs a sed command to replace the existing image tag in the deployment.yaml file with the newly built Docker image's tag.
+        - Then, it commits this change to the GitHub repository, using Jenkins' credentials to authenticate, along with the provided username and password.
+        - Finally, it pushes the updated deployment.yaml file to the GitHub repository's main branch.
 
 7. **Resolve Deployment Issues**
     - Encountered `kubectl: not found` error, resolved by installing kubectl inside the Jenkins container.
@@ -111,4 +122,7 @@ This project demonstrates the integration between Kubernetes, Jenkins, DockerHub
     - Solution: Used Ngrok to expose Jenkins to the public and allow GitHub to trigger the webhook.
 
 ## Summary
-In summary, this Jenkinsfile defines a declarative pipeline with three stages: building a Docker image, pushing the image to Docker Hub, and deploying the image to a Kubernetes cluster. The pipeline is designed to run on any available agent and includes logic to fetch code from a GitHub repository, build and push the Docker image to Docker Hub, and finally deploy it to Kubernetes.
+The pipeline workflow begins by checking out the latest code from a GitHub repository. It then builds a Docker image of a Flask application, pushes it to DockerHub, and updates the Kubernetes deployment manifest file with the new image version. Finally, it commits and pushes this change back to the GitHub repository.
+The outcome of the pipeline is an automated deployment of the Flask application on a Kubernetes cluster. Whenever changes are made to the app.py file and pushed to GitHub, Jenkins automatically triggers the pipeline, ensuring that the latest version of the application is built, deployed, and updated in the Kubernetes cluster without manual intervention.
+
+Following the pipeline's completion, ArgoCD takes over, detecting changes in the Git repository's Kubernetes manifests. It then synchronizes the live state of the application with the desired state specified in the Git repository. This ensures that any updates pushed through the pipeline are automatically deployed to the Kubernetes cluster, maintaining consistency between the defined configuration in Git and the actual running application.
