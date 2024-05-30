@@ -1,6 +1,9 @@
 # k8s-project
 This project demonstrates the integration between Kubernetes, Jenkins, DockerHub, and GitHub. The goal is to automate the deployment of a simple Flask application using a CI/CD pipeline. When changes are pushed to the `app.py` file on GitHub, Jenkins builds a Docker image, pushes it to DockerHub, and deploys it to a Kubernetes cluster.
 
+![_דיאגרמה k8s_](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/8da6839b-cc4b-40ba-bba8-c27dcd779116)
+
+
 ## Plugins Used
 - **Kubernetes CLI Plugin**
 - **Kubernetes Continuous Deploy Plugin**
