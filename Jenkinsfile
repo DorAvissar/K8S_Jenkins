@@ -35,13 +35,19 @@ pipeline {
             }
         }
         
-         stage('Update Kubernetes Manifests') {
+        stage('Update Kubernetes Manifests') {
             steps {
                 script {
+                    def deploymentFilePath = 'jenkins/cluster_config/deployment.yaml'
+                    def deploymentFileContent = readFile(deploymentFilePath).trim()
+
+                    deploymentFileContent = deploymentFileContent.replace('${VERSION}', "${BUILD_NUMBER}")
+
+                    writeFile file: deploymentFilePath, text: deploymentFileContent
+
                     sh '''
-                        sed -i 's|image: doravissar/k8s_deploy.*|image: doravissar/k8s_deploy:latest|' deployment.yaml
-                        git add deployment.yaml
-                        git commit -m "Update deployment.yaml with latest Docker image tag"
+                        git add .
+                        git commit -m "Update deployment.yaml with build number ${BUILD_NUMBER}"
                         git push origin main
                     '''
                 }
