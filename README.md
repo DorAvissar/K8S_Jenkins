@@ -51,6 +51,9 @@ This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub wo
     kubectl port-forward svc/argocd-server -n argocd 9090:443
     ```
 
+    - ArgoCD username : admin
+    - ArgoCD password : argocd admin initial-password -n argocd
+
 4. **Connect Jenkins to GitHub**
     - Set up a GitHub webhook and configured Jenkins credentials to trigger the pipeline upon a commit 
     - Used Ngrok to expose Jenkins to the public for GitHub webhook integration.
