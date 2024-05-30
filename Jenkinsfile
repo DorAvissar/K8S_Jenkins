@@ -38,8 +38,19 @@ pipeline {
         stage('Update Kubernetes Manifests') {
             steps {
                 script {
-                    // Ensure git is installed in the Jenkins container
-                    sh 'apk add git'
+                    // Ensure git is installed in the Jenkins container using appropriate package manager
+                    sh '''
+                        if command -v apt-get &> /dev/null; then
+                            apt-get update && apt-get install -y git
+                        elif command -v yum &> /dev/null; then
+                            yum install -y git
+                        elif command -v apk &> /dev/null; then
+                            apk add git
+                        else
+                            echo "No supported package manager found for installing git."
+                            exit 1
+                        fi
+                    '''
                     
                     // Update deployment.yaml file with the new image version
                     sh """
