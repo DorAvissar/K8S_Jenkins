@@ -13,7 +13,17 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: "${BRANCH}", url: "${REPO_URL}", credentialsId: "${GIT_CREDENTIALS}"
+                script {
+                    def authorName = sh(
+                        script: "git log -1 --pretty=format:'%an'",
+                        returnStdout: true
+                    ).trim()
+                    if (authorName == "jenkins") {
+                        currentBuild.result = 'SUCCESS'
+                        error "Skipping build due to Jenkins commit"
+                    }
+                }
+                 git branch: "${BRANCH}", url: "${REPO_URL}", credentialsId: "${GIT_CREDENTIALS}"
             }
         }
         
