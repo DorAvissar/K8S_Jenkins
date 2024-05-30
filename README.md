@@ -1,8 +1,8 @@
 # k8s-project
 This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub work together. Its aim is to automate the deployment process of a basic Flask application using CI/CD. Whenever modifications are made to the app.py file on GitHub, Jenkins constructs a Docker image, uploads it to DockerHub, and then modifies the deployment.yaml file. This triggers ArgoCD to deploy the updated application to the Kubernetes cluster.
 
-https://github.com/DorAvissar/K8S_Jenkins/blob/main/Diagram.png?raw=true
-
+  ![get-context](https://github.com/DorAvissar/K8S_Jenkins/blob/main/Diagram.png?raw=true)
+  
 ## Plugins Used
 - **Docker Plugin**
 - **Docker Commons Plugin**
