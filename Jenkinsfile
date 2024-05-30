@@ -35,36 +35,15 @@ pipeline {
             }
         }
         
-        stage('Update Kubernetes Manifests') {
+         stage('Update Kubernetes Manifests') {
             steps {
                 script {
-                    // Ensure git is installed in the Jenkins container using appropriate package manager
                     sh '''
-                        if command -v apt-get &> /dev/null; then
-                            apt-get update && apt-get install -y git
-                        elif command -v yum &> /dev/null; then
-                            yum install -y git
-                        elif command -v apk &> /dev/null; then
-                            apk add git
-                        else
-                            echo "No supported package manager found for installing git."
-                            exit 1
-                        fi
-                    '''
-                    
-                    // Update deployment.yaml file with the new image version
-                    sh """
-                        sed -i 's|image: ${DOCKER_IMAGE}:.*|image: ${DOCKER_IMAGE}:${VERSION}|' deployment.yaml
-                    """
-                    
-                    // Configure git and commit the changes
-                    sh """
-                        git config --global user.email "jenkins@yourdomain.com"
-                        git config --global user.name "Jenkins"
+                        sed -i 's|image: doravissar/k8s_deploy.*|image: doravissar/k8s_deploy:latest|' deployment.yaml
                         git add deployment.yaml
-                        git commit -m "Update image to ${DOCKER_IMAGE}:${VERSION}"
-                        git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/DorAvissar/K8S_Jenkins.git ${BRANCH}
-                    """
+                        git commit -m "Update deployment.yaml with latest Docker image tag"
+                        git push origin main
+                    '''
                 }
             }
         }
