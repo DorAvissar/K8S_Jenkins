@@ -50,6 +50,7 @@ This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub wo
     kubectl get svc -n argocd
     kubectl port-forward svc/argocd-server -n argocd 9090:443
     ```
+![argoserver](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/170b3753-8ad7-4a80-9d45-7031da12452f)
 
     - ArgoCD username : admin
     - ArgoCD password : argocd admin initial-password -n argocd
@@ -106,13 +107,18 @@ This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub wo
     ```sh
     kubectl port-forward pod/<pod name> 8080:80 -n <name space>
     ```
+    ![getapp](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/a2d85685-499e-4194-885f-f663733ed1c7)
+   
     - run http://localhost:8080
+    
+    ![app](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/90dd980e-2b14-4277-9d9f-31081232f255)
+
 
 ## Troubleshooting
 
 ### Docker Commands Not Found
     - Issue: Jenkins container did not recognize Docker commands.
-    - Solution: Installed Docker Inside the Jenkins container and started the Docker daemon manually.
+    - Solution: started the Docker daemon manually.
 
 ### kubectl Commands Not Found
     - Issue: Jenkins container did not recognize `kubectl` commands.
@@ -127,3 +133,7 @@ The pipeline workflow begins by checking out the latest code from a GitHub repos
 The outcome of the pipeline is an automated deployment of the Flask application on a Kubernetes cluster. Whenever changes are made to the app.py file and pushed to GitHub, Jenkins automatically triggers the pipeline, ensuring that the latest version of the application is built, deployed, and updated in the Kubernetes cluster without manual intervention.
 
 Following the pipeline's completion, ArgoCD takes over, detecting changes in the Git repository's Kubernetes manifests. It then synchronizes the live state of the application with the desired state specified in the Git repository. This ensures that any updates pushed through the pipeline are automatically deployed to the Kubernetes cluster, maintaining consistency between the defined configuration in Git and the actual running application.
+
+![argocd](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/6e2adbc8-f994-4c8c-ad57-ecdcdb8777ac)
+
+
