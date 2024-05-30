@@ -45,7 +45,7 @@ pipeline {
 
                     writeFile file: deploymentFilePath, text: deploymentFileContent
 
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    withCredentials([usernamePassword(credentialsId: 'github_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh '''
                             git config --global user.email "jenkins@example.com"
                             git config --global user.name "Jenkins"
