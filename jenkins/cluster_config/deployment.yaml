@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8s-deployment
+  name: flask-app
   namespace: jenkins
 spec:
   replicas: 1
