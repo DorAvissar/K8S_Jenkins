@@ -48,13 +48,9 @@ pipeline {
          stage('Update Kubernetes Manifests') {
             steps {
                 script {
-                    def deploymentFilePath = 'jenkins/cluster_config/deployment.yaml'
-                    def deploymentFileContent = readFile(deploymentFilePath).trim()
-
-                    deploymentFileContent = deploymentFileContent.replace('${VERSION}', "${BUILD_NUMBER}")
-
-                    writeFile file: deploymentFilePath, text: deploymentFileContent
-
+                    sh """
+                        sed -i 's|image: ${DOCKER_IMAGE}:.*|image: ${DOCKER_IMAGE}:${VERSION}|' jenkins/cluster_config/deployment.yaml
+                    """
                     withCredentials([usernamePassword(credentialsId: 'github_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh '''
                             git config --global user.email "jenkins@example.com"
