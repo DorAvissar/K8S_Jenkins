@@ -100,13 +100,11 @@ This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub wo
     - **Note that for the deployment to work, you need to manually deploy the application for the first time**
 
 8. **Deployment Verification**
-    - Verified the deployment using Lens, ensuring new pods replace the old ones.
-![lens](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/692e8a6c-c689-4ea9-8e47-4ca51d7cc0bb)
+    - Verified the deployment using the ArgoCD interface, ensuring new pods replace the old ones.
 
     - **So ,How can I access the Flask application after the deployment?** 
     ```sh
-    kubectl get pods --namespace=jenkins
-    kubectl port-forward pod/<pod-name> 8080:80 --namespace=jenkins
+    kubectl port-forward pod/<pod name> 8080:80 -n <name space>
     ```
     - run http://localhost:8080
 
