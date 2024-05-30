@@ -35,7 +35,7 @@ pipeline {
             }
         }
         
-        stage('Update Kubernetes Manifests') {
+         stage('Update Kubernetes Manifests') {
             steps {
                 script {
                     def deploymentFilePath = 'jenkins/cluster_config/deployment.yaml'
@@ -45,11 +45,15 @@ pipeline {
 
                     writeFile file: deploymentFilePath, text: deploymentFileContent
 
-                    sh '''
-                        git add .
-                        git commit -m "Update deployment.yaml with build number ${BUILD_NUMBER}"
-                        git push origin main
-                    '''
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh '''
+                            git config --global user.email "jenkins@example.com"
+                            git config --global user.name "Jenkins"
+                            git add .
+                            git commit -m "Update deployment.yaml with build number ${BUILD_NUMBER}"
+                            git push origin main
+                        '''
+                    }
                 }
             }
         }
