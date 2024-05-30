@@ -54,6 +54,9 @@ pipeline {
                             git push origin main
                         '''
                     }
+
+                    echo 'Finished pushing changes to GitHub'
+
                 }
             }
         }
