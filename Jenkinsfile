@@ -51,7 +51,7 @@ pipeline {
                             git config --global user.name "Jenkins"
                             git add .
                             git commit -m "Update deployment.yaml with build number ${BUILD_NUMBER}"
-                            git push origin main
+                            git push https://${USERNAME}:${PASSWORD}@github.com/DorAvissar/K8S_Jenkins.git main
                         '''
                     }
 
