@@ -50,7 +50,7 @@ This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub wo
     kubectl get svc -n argocd
     kubectl port-forward svc/argocd-server -n argocd 9090:443
     ```
-![argoserver](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/170b3753-8ad7-4a80-9d45-7031da12452f)
+![argoserver](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/5f7e375a-2197-4f2e-a2b8-0cc833d38ad4)
 
     - ArgoCD username : admin
     - ArgoCD password : argocd admin initial-password -n argocd
