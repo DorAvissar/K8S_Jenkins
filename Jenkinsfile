@@ -18,7 +18,7 @@ pipeline {
                         script: "git log -1 --pretty=format:'%an'",
                         returnStdout: true
                     ).trim()
-                    if (authorName == "jenkins") {
+                    if (authorName == "Jenkins") {
                         currentBuild.result = 'SUCCESS'
                         error "Skipping build due to Jenkins commit"
                     }
