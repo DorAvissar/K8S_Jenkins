@@ -1,8 +1,7 @@
 # k8s-project
 This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub work together. Its aim is to automate the deployment process of a basic Flask application using CI/CD. Whenever modifications are made to the app.py file on GitHub, Jenkins constructs a Docker image, uploads it to DockerHub, and then modifies the deployment.yaml file. This triggers ArgoCD to deploy the updated application to the Kubernetes cluster.
 
-
-![_דיאגרמה k8s_](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/8da6839b-cc4b-40ba-bba8-c27dcd779116)
+https://github.com/DorAvissar/K8S_Jenkins/blob/main/Diagram.png?raw=true
 
 ## Plugins Used
 - **Docker Plugin**
@@ -15,10 +14,10 @@ This project showcases how Kubernetes, Jenkins, DockerHub, ArgoCD, and GitHub wo
 ## Project Workflow
 
 1. **Setup Kubernetes Cluster**
-    - Created a Kubernetes cluster using Kind and configured it with `jenkins-config.yaml`.
+    - Created a Kubernetes cluster using Kind and configured it with `cluster-config.yaml`.
     
     ```sh
-    kind create cluster --config jenkins-config.yaml
+    kind create cluster --config cluster-config.yaml
     kind get clusters
     kubectl create namespace jenkins
     kubectl config set-context --current --namespace=jenkins (to connect the namespace to the cluster)

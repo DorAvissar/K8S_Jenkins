@@ -49,7 +49,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        sed -i 's|image: ${DOCKER_IMAGE}:.*|image: ${DOCKER_IMAGE}:${VERSION}|' jenkins/cluster_config/deployment.yaml
+                        sed -i 's|image: ${DOCKER_IMAGE}:.*|image: ${DOCKER_IMAGE}:${VERSION}|' ConfigFiles/cluster_config/deployment.yaml
                     """
                     withCredentials([usernamePassword(credentialsId: 'github_cred', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh '''

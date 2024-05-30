@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/DorAvissar/K8S_Jenkins.git
     targetRevision: main
-    path: jenkins/cluster_config
+    path: ConfigFiles/cluster_config
   destination:
     server: https://kubernetes.default.svc
     namespace: myapp
