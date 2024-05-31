@@ -135,5 +135,3 @@ Following the pipeline's completion, ArgoCD takes over, detecting changes in the
 
 ![argocd](https://github.com/DorAvissar/K8S_Jenkins/assets/165499842/6e2adbc8-f994-4c8c-ad57-ecdcdb8777ac)
 
-
-<!-- sd -->
