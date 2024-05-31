@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: flask-app
-        image: doravissar/k8s_deploy:82
+        image: doravissar/k8s_deploy:84
         ports:
         - containerPort: 80
